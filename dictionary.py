@@ -1,8 +1,9 @@
 import wrap
-import json
+import pickle
+
 
 def dumps(variable):
-    return json.dumps({wrap.dumps(k):wrap.dumps(v) for k,v in variable.iteritems()})
+    return pickle.dumps({wrap.dumps(k):wrap.dumps(v) for k,v in variable.iteritems()})
 
 def loads(bytes):
-    return {wrap.loads(k):wrap.loads(v) for k,v in json.loads(bytes).iteritems()}
+    return {wrap.loads(k):wrap.loads(v) for k,v in pickle.loads(bytes).iteritems()}

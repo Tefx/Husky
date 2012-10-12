@@ -1,19 +1,26 @@
 import types
 import struct
-import json
 import pickle
 import iterable
 import dictionary
 import function
+import module
+import snappy as ziplib
 
+
+def compressed(f):
+    return lambda *args: ziplib.compress(pickle.dumps(f(*args)))
+
+def decompressed(f):
+    return lambda x, *args: f(pickle.loads(ziplib.decompress(x)), *args)
 
 dispatches = [
-    (types.NoneType, json),
-    (types.BooleanType, json),
-    (types.IntType, json),
-    (types.LongType, json),
-    (types.FloatType, json),
-    (types.StringType, json),
+    (types.NoneType, pickle),
+    (types.BooleanType, pickle),
+    (types.IntType, pickle),
+    (types.LongType, pickle),
+    (types.FloatType, pickle),
+    (types.StringType, pickle),
     (types.ComplexType, pickle),
     (types.UnicodeType, pickle),
     (types.BuiltinFunctionType, pickle),
@@ -25,6 +32,8 @@ dispatches = [
     (types.DictionaryType, dictionary),
     (types.FunctionType, function),
     (types.LambdaType, function),
+    (types.ModuleType, module),
+    (object, pickle)
 ]
 
 
@@ -34,19 +43,26 @@ def tag(s, t):
 def untag(s):
     return ord(struct.unpack(">c", s)[0])
 
-def dumps(d):
+@compressed
+def dumps(d, gen_globals=True):
     for item in dispatches:
         if isinstance(d, item[0]):
-            return tag(item[1].dumps(d), item)
+            if item[1] == function:
+                return tag(item[1].dumps(d, gen_globals), item)
+            else:
+                return tag(item[1].dumps(d), item)
     return None
 
-def loads(s):
+@decompressed
+def loads(s, use_globals=None):
     t, m = dispatches[untag(s[0])]
-    f = m.loads(s[1:])
+    if m == function:
+        f = m.loads(s[1:], use_globals)
+    else:
+        f = m.loads(s[1:])
     if not isinstance(f, t):
         f = t(f)
     return f
-
 
 if __name__ == '__main__':
     v = {1:[1,2,3], "v":None}
