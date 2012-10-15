@@ -1,8 +1,7 @@
 import wrap
-import pickle
+import cPickle as pickle
 import types
 import marshal
-import pickle
 import ctypes
 
 
@@ -119,9 +118,19 @@ if __name__ == '__main__':
             return 0
 
     db = dumps(dumps)
-    print repr(db)
-    d = loads(db)
-    print d
-    print d(dumps) == db
+    # print db
+    # d = loads(db)
+    # print d
+    # print d(dumps) == db
+    # print type(db)
 
+    import json
+    import snappy
+
+    bb = snappy.compress(json.dumps(db))
+    print bb
+    print type(bb)
+    bbb = json.loads(snappy.decompress(bb))
+    print type(bbb)
+    print loads(bbb.encode())
 

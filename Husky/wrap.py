@@ -1,6 +1,6 @@
 import types
 import struct
-import pickle
+import cPickle as pickle
 import iterable
 import dictionary
 import function
@@ -43,7 +43,7 @@ def tag(s, t):
 def untag(s):
     return ord(struct.unpack(">c", s)[0])
 
-@compressed
+# @compressed
 def dumps(d, gen_globals=True):
     for item in dispatches:
         if isinstance(d, item[0]):
@@ -53,7 +53,7 @@ def dumps(d, gen_globals=True):
                 return tag(item[1].dumps(d), item)
     return None
 
-@decompressed
+# @decompressed
 def loads(s, use_globals=None):
     t, m = dispatches[untag(s[0])]
     if m == function:

@@ -1,4 +1,4 @@
-from wrap import dumps, loads
+from Husky import dumps, loads
 
 
 def f(x, y):
@@ -31,3 +31,14 @@ if __name__ == '__main__':
 
     b = dumps(r)
     print loads(b)(10)
+
+    class C(object):
+        pass
+
+    c = C()
+    setattr(c, "m", loads(b))
+
+    fff = loads(dumps(loads(b)))
+    print fff(10)
+
+    print c.m(10)

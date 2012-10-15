@@ -1,5 +1,5 @@
 import wrap
-import pickle
+import cPickle as pickle
 
 
 def dumps(variable):
