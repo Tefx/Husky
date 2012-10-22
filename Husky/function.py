@@ -15,7 +15,7 @@ def dumps(f, gen_globals=True):
         closure = [wrap.dumps(c.cell_contents) for c in f.func_closure]
     else:
         closure = None
-    g = {"__builtins__": wrap.dumps(f.func_globals["__builtins__"])}
+    g = {"__builtins__": wrap.dumps(__import__("__builtin__"))}
     if gen_globals:
         for item in find_requires(f):
             v = f.func_globals[item]
@@ -37,11 +37,10 @@ def loads(bytes, use_globals=None):
     g[f.func_name] = f
     return f
 
-
 def rebuild_globals(g):
-    for name in g.iterkeys():
+    l = [x for x in g.iterkeys()]
+    for name in l:
         g[name] = wrap.loads(g[name], g)
-
 
 def find_requires(f, ignores=[]):
     rs = find_requires_code(f.func_code, f.func_globals, ignores)
