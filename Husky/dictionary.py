@@ -2,8 +2,8 @@ import wrap
 import cPickle as pickle
 
 
-def dumps(variable):
-    return pickle.dumps({wrap.dumps(k):wrap.dumps(v) for k,v in variable.iteritems()})
+def dumps(variable, gen_globals=True):
+    return pickle.dumps({wrap.dumps(k, gen_globals):wrap.dumps(v, gen_globals) for k,v in variable.iteritems()})
 
-def loads(bytes):
-    return {wrap.loads(k):wrap.loads(v) for k,v in pickle.loads(bytes).iteritems()}
+def loads(bytes, use_globals=False):
+    return {wrap.loads(k, use_globals):wrap.loads(v, use_globals) for k,v in pickle.loads(bytes).iteritems()}

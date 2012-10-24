@@ -10,39 +10,38 @@ cellnew.restype = ctypes.py_object
 cellnew.argtypes = (ctypes.py_object,)
 
 def dumps(f, gen_globals=True):
-    code = marshal.dumps(f. func_code)
+    code = marshal.dumps(f.func_code)
     if f.func_closure:
-        closure = [wrap.dumps(c.cell_contents) for c in f.func_closure]
+        closure = [c.cell_contents for c in f.func_closure]
     else:
         closure = None
-    g = {"__builtins__": wrap.dumps(__import__("__builtin__"))}
+    g = {}
     if gen_globals:
         for item in find_requires(f):
-            v = f.func_globals[item]
-            g[item] = wrap.dumps(v, False)
-    return pickle.dumps((code, g, closure, f.func_defaults))
+            g[item] = f.func_globals[item]
+    return wrap.dumps((code, g, closure, f.func_defaults), False)
 
-def loads(bytes, use_globals=None):
-    code, g, closure, defaults = pickle.loads(bytes)
+def loads(bytes, use_globals=False):
+    code, g, closure, defaults = wrap.loads(bytes, True)
+    g["__builtins__"] = __import__("__builtin__")
     if defaults:
         defaults = tuple(defaults)
-    func_code = marshal.loads(code)
+    func_code = marshal.loads(code) 
     if closure:
-        closure = tuple(cellnew(wrap.loads(c)) for c in closure)
-    if use_globals: 
-        g = use_globals
-    else:
-        rebuild_globals(g)
+        closure = tuple(cellnew(c) for c in closure)
     f = types.FunctionType(func_code, g, closure=closure, argdefs=defaults)
-    g[f.func_name] = f
+    if not use_globals:
+        for n,f0 in f.func_globals.iteritems():
+            if isinstance(f0, types.FunctionType):
+                f.func_globals[n] = replace_globals(f0, f.func_globals)
+        g[f.func_name] = f
     return f
 
-def rebuild_globals(g):
-    l = [x for x in g.iterkeys()]
-    for name in l:
-        g[name] = wrap.loads(g[name], g)
+def replace_globals(f, g):
+    return types.FunctionType(f.func_code, g, f.func_closure, f.func_defaults)
 
-def find_requires(f, ignores=[]):
+def find_requires(f, ignores=["__builtins__"]):
+    # print "f", f.__module__
     rs = find_requires_code(f.func_code, f.func_globals, ignores)
     return [x for x in rs if x in f.func_globals]
 
@@ -54,7 +53,11 @@ def find_requires_code(code, g, ignores):
     i = 0
     while i<len(requires):
         item = requires[i]
+        # if item in g and hasattr(g[item], "__module__"):
+            # print item, g[item].__module__
         if item in g and isinstance(g[item], types.FunctionType):
+            for k,v in g[item].func_globals.iteritems():
+                g[k] = v
             for j in find_requires(g[item], list(ignores)+requires):
                 if j not in requires:
                     requires.append(j)
