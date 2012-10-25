@@ -1,38 +1,38 @@
 import types
 import struct
 import cPickle as pickle
-import iterable
-import dictionary
+import iterable_husky
+import dict_husky
 import function_husky
-import module
+import module_husky
 import type_husky
 
 
 dispatches = [
-    (types.NoneType, pickle),
-    (types.BooleanType, pickle),
-    (types.IntType, pickle),
-    (types.LongType, pickle),
-    (types.FloatType, pickle),
-    (types.StringType, pickle),
-    (types.ComplexType, pickle),
-    (types.UnicodeType, pickle),
+    (types.NoneType,            pickle),
+    (types.BooleanType,         pickle),
+    (types.IntType,             pickle),
+    (types.LongType,            pickle),
+    (types.FloatType,           pickle),
+    (types.StringType,          pickle),
+    (types.ComplexType,         pickle),
+    (types.UnicodeType,         pickle),
     (types.BuiltinFunctionType, pickle),
-    (types.XRangeType, pickle),
-    (types.TupleType, iterable),
-    (types.ListType, iterable),
-    (types.GeneratorType, iterable),
-    (types.DictType, dictionary),
-    (types.DictionaryType, dictionary),
-    (types.FunctionType, function_husky),
-    (types.LambdaType, function_husky),
-    (types.ModuleType, module),
-    (type, type_husky),
-    (object, pickle)
+    (types.XRangeType,          pickle),
+    (types.TupleType,           iterable_husky),
+    (types.ListType,            iterable_husky),
+    (types.GeneratorType,       iterable_husky),
+    (types.DictType,            dict_husky),
+    (types.DictionaryType,      dict_husky),
+    (types.FunctionType,        function_husky),
+    (types.LambdaType,          function_husky),
+    (types.ModuleType,          module_husky),
+    (type,                      type_husky),
+    (object,                    pickle)
 ]
 
 
-containers = [function_husky, dictionary, iterable]
+containers = [function_husky, dict_husky, iterable_husky]
 
 
 def tag(s, t):
