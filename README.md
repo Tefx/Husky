@@ -16,7 +16,7 @@ An Advanced serializing library for python, like pickle, but can dump more, for 
     def bar():
         return "ok"
     
-    bytes = dumps(a)
-    f = loads(a)
+    bytes = dumps(foo)
+    f = loads(bytes)
     
     f()
