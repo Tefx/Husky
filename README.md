@@ -1,7 +1,12 @@
 Husky
 =====
 
-An Advanced serializing library like pickle but can dump more, for example, functions.
+An Advanced serializing library for python, like pickle, but can dump more, for example, functions.
+
+# Install
+    
+    $ pip install Husky
+
 
 # Usage
     
