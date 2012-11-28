@@ -40,9 +40,10 @@ def loads(bytes, use_globals=False):
 def replace_globals(f, g):
     return types.FunctionType(f.func_code, g, f.func_closure, f.func_defaults)
 
-def find_requires(f, ignores=["__builtins__"]):
-    rs = find_requires_code(f.func_code, f.func_globals, ignores)
-    return {x:f.func_globals[x] for x in rs if x in f.func_globals}
+def find_requires(f, ignores=["__builtins__", "__file__"]):
+    g = dict(f.func_globals)
+    rs = find_requires_code(f.func_code, g, ignores)
+    return {x:g[x] for x in rs if x in g}
 
 def find_requires_code(code, g, ignores):
     requires = [name for name in code.co_names if name not in ignores and name != code.co_name]
