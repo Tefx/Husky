@@ -1,5 +1,6 @@
 import wrap
 import types
+import class_husky
 
 type_list = [
     types.NoneType,
@@ -38,11 +39,18 @@ type_list = [
     types.GetSetDescriptorType,
     types.MemberDescriptorType,
     types.StringTypes,
-    object
 ]
 
 def dumps(t):
-    return wrap.dumps(type_list.index(t))
+    if t in type_list:
+        return wrap.dumps(type_list.index(t))
+    else:
+        return class_husky.dumps(t)
+
 
 def loads(i):
-    return type_list[wrap.loads(i)]
+    b = wrap.loads(i)
+    if isinstance(b, int):
+        return type_list[b]
+    else:
+        return class_husky.loads(i)

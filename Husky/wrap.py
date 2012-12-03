@@ -27,7 +27,7 @@ dispatches = [
     (types.FunctionType,        function_husky),
     (types.LambdaType,          function_husky),
     (types.ModuleType,          module_husky),
-    (type,                      type_husky),
+    (types.TypeType,            type_husky),
     (object,                    pickle)
 ]
 
