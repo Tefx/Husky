@@ -6,6 +6,7 @@ import dict_husky
 import function_husky
 import module_husky
 import type_husky
+import instance_husky
 
 
 dispatches = [
@@ -21,7 +22,7 @@ dispatches = [
     (types.XRangeType,          pickle),
     (types.TupleType,           iterable_husky),
     (types.ListType,            iterable_husky),
-    (types.GeneratorType,       iterable_husky),
+    (types.GeneratorType,       instance_husky),
     (types.DictType,            dict_husky),
     (types.DictionaryType,      dict_husky),
     (types.FunctionType,        function_husky),
@@ -29,6 +30,7 @@ dispatches = [
     (types.ModuleType,          module_husky),
     (types.TypeType,            type_husky),
     (object,                    pickle)
+    # (object,                    instance_husky)
 ]
 
 

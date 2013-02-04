@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='Husky',
-      version='0.1.0',
+      version='0.1.6',
       description='An advanced serializing library like pickle but can seralize more, like functions.',
       author='Zhu Zhaomeng',
       author_email='zhaomeng.zhu@gmail.com',

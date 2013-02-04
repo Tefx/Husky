@@ -59,4 +59,5 @@ def find_requires_code(code, g, ignores):
                 if j not in requires:
                     requires.append(j)
         i += 1
-    return requires
+    return requires    
+        
