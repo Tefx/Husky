@@ -1,6 +1,7 @@
-import wrap
 import types
+
 import class_husky
+import wrap
 
 type_list = [
     types.NoneType,
@@ -40,6 +41,7 @@ type_list = [
     types.MemberDescriptorType,
     types.StringTypes,
 ]
+
 
 def dumps(t):
     if t in type_list:

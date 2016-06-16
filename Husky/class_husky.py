@@ -1,19 +1,22 @@
-import wrap
 import types
+
 import module_husky
+import wrap
 
 ignores = ["__weakref__", "__dict__"]
 
 TYPE_NON_USERDEFINED = 0
 TYPE_USERDEFINED = 1
 
+
 def dumps(C):
     m = module_husky.loads(C.__module__)
     if not module_husky.is_userdefined(m):
         return wrap.dumps((TYPE_NON_USERDEFINED, C.__name__, m))
     else:
-        dicts = {k:v for k,v in vars(C).iteritems() if k not in ignores}
+        dicts = {k: v for k, v in vars(C).iteritems() if k not in ignores}
         return wrap.dumps((TYPE_USERDEFINED, C.__name__, C.__bases__, dicts))
+
 
 def loads(bytes):
     s = wrap.loads(bytes)

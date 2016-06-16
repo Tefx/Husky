@@ -1,10 +1,10 @@
 import wrap
-import types
 
 
 def dumps(ins):
     d = getattr(ins, "__dict__", None)
     return wrap.dumps((ins.__class__, d))
+
 
 def loads(bytes):
     C, d = wrap.loads(bytes)
@@ -23,6 +23,7 @@ if __name__ == '__main__':
 
         def foo(self, x):
             return self.a + x
+
 
     c = UserClass(1)
     bytes = dumps(c)

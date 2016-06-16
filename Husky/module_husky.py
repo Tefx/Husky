@@ -1,15 +1,20 @@
 import os
-import sys
-from distutils import sysconfig
 import site
+import sys
+from distutils.sysconfig import get_python_lib
 
-NON_USERDEFINED_PATHES = [
-    sysconfig.get_python_lib(standard_lib=True, prefix=os.path.realpath(sys.prefix)),
-    sysconfig.get_python_lib(standard_lib=True),
-] + site.getsitepackages()
+NON_USERDEFINED_PATHES = [get_python_lib(standard_lib=True, prefix=os.path.realpath(sys.prefix)),
+                          get_python_lib(standard_lib=True), ]
+
+try:
+    NON_USERDEFINED_PATHES += site.getsitepackages()
+except AttributeError:
+    pass
+
 
 def dumps(m):
     return m.__name__
+
 
 def loads(b):
     if "." in b:
@@ -19,6 +24,7 @@ def loads(b):
     else:
         return __import__(b, {}, {}, [], -1)
 
+
 def is_userdefined(m):
     if not hasattr(m, "__file__"):
         return False
@@ -26,5 +32,5 @@ def is_userdefined(m):
 
 
 if __name__ == '__main__':
-    for l in  NON_USERDEFINED_PATHES:
+    for l in NON_USERDEFINED_PATHES:
         print l
